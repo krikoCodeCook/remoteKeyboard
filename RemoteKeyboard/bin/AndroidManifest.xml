@@ -4,6 +4,8 @@
     <uses-sdk
         android:minSdkVersion="10"
         android:targetSdkVersion="15" />
+        
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application android:label="@string/ime_name" >
         <service
@@ -19,7 +21,7 @@
                 android:resource="@xml/method" />
         </service>
         <service
-            android:name="com.example.android.softkeyboard.service.RemoteKeyboardService"
+            android:name=".service.RemoteKeyboardService"
             android:enabled="true" >
         </service>
     </application>

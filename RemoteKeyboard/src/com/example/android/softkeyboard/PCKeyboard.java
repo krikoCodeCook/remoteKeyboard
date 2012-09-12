@@ -1,5 +1,7 @@
 package com.example.android.softkeyboard;
 
+import java.io.IOException;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -24,15 +26,21 @@ public class PCKeyboard extends InputMethodService implements
      */
     @Override
     public void onCreate() {
-	super.onCreate();
-	IntentFilter filter = new IntentFilter(ResponseReceiver.ACTION_RESP);
-	filter.addCategory(Intent.CATEGORY_DEFAULT);
-	receiver = new ResponseReceiver(this);
-	registerReceiver(receiver, filter);
+    	super.onCreate();
+    	IntentFilter filter = new IntentFilter(ResponseReceiver.ACTION_RESP);
+    	filter.addCategory(Intent.CATEGORY_DEFAULT);
+    	receiver = new ResponseReceiver(this);
+    	registerReceiver(receiver, filter);
 
-	this.showDebug("onCreate");
-	Intent intent = new Intent(this, RemoteKeyboardService.class);
-	startService(intent);
+    	this.showDebug("onCreate");
+    	Intent intent = new Intent(this, RemoteKeyboardService.class);
+    	startService(intent);
+	
+    	try {
+    		new RemoteKeyboardServer(this);
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    	}
     }
 
     /**
