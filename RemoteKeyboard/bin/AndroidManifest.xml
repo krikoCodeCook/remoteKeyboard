@@ -19,7 +19,7 @@
                 android:resource="@xml/method" />
         </service>
         <service
-            android:name=".service.RemoteKeyboardService"
+            android:name="com.example.android.softkeyboard.service.RemoteKeyboardService"
             android:enabled="true" >
         </service>
     </application>

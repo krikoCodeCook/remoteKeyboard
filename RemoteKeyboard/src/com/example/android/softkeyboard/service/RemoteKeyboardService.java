@@ -3,6 +3,7 @@ package com.example.android.softkeyboard.service;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.widget.Toast;
 
 /**
@@ -18,16 +19,8 @@ public class RemoteKeyboardService extends IntentService {
      * A constructor is required, and must call the super IntentService(String)
      * constructor with a name for the worker thread.
      */
-    public RemoteKeyboardService(String name) {
-	super(name);
-
-	Context context = getApplicationContext();
-	CharSequence text = "Hello toast!";
-	int duration = Toast.LENGTH_SHORT;
-
-	Toast toast = Toast.makeText(context, text, duration);
-	toast.show();
-	// TODO Auto-generated constructor stub
+    public RemoteKeyboardService() {
+	super("RemoteKeyboardService");
     }
 
     /**
@@ -38,8 +31,9 @@ public class RemoteKeyboardService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 	// do the work
-	// TODO Auto-generated method stub
 
     }
-
+    
 }
+
+
