@@ -1,7 +1,9 @@
 package com.example.android.softkeyboard.service;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
+import android.widget.Toast;
 
 /**
  * This is a subclass of Service that uses a worker thread to handle all start
@@ -18,6 +20,13 @@ public class RemoteKeyboardService extends IntentService {
      */
     public RemoteKeyboardService(String name) {
 	super(name);
+
+	Context context = getApplicationContext();
+	CharSequence text = "Hello toast!";
+	int duration = Toast.LENGTH_SHORT;
+
+	Toast toast = Toast.makeText(context, text, duration);
+	toast.show();
 	// TODO Auto-generated constructor stub
     }
 
