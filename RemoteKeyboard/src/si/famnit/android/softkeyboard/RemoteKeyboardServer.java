@@ -12,7 +12,7 @@ import android.util.Log;
 
 public class RemoteKeyboardServer extends NanoHTTPD {
     private final String[] assetFiles = { "index.html",
-	    "bootstrap-combined.min.css", "jquery.min.js", "test.txt" };
+	    "bootstrap-combined.min.css", "jquery.min.js", "88x31.png" };
     private PowerManager.WakeLock wakeLock;
     private PCKeyboard pcK;
     private Context context;
@@ -66,7 +66,10 @@ public class RemoteKeyboardServer extends NanoHTTPD {
 	    mime = "text/javascript";
 	} else if (uri.contains(".css")) {
 	    mime = "text/css";
+	} else if (uri.contains(".png")) {
+	    mime = "image/png";
 	}
+	
 
 	return new NanoHTTPD.Response(HTTP_OK, mime, input);
     }
