@@ -151,7 +151,7 @@ public class PCKeyboard extends InputMethodService implements
 
 	// if (httpSrv != null)
 	// httpSrv.stop();
-	//	httpSrv = null;
+	// httpSrv = null;
     }
 
     /**
@@ -358,15 +358,18 @@ public class PCKeyboard extends InputMethodService implements
 		for (Enumeration<InetAddress> enumIpAddr = intf
 			.getInetAddresses(); enumIpAddr.hasMoreElements();) {
 		    InetAddress inetAddress = enumIpAddr.nextElement();
-		    String ip4 = inetAddress.getHostAddress().toString();
-		    if (!inetAddress.isLoopbackAddress()
-			    && InetAddressUtils.isIPv4Address(ip4)) {
-			Log.d(TAG, "getLocalIpAddress(): " + ip4);
-			ip4s += ", " + ip4;
+
+		    if (inetAddress.isSiteLocalAddress()) {
+			String ip4 = inetAddress.getHostAddress().toString();
+			if (!inetAddress.isLoopbackAddress()
+				&& InetAddressUtils.isIPv4Address(ip4)) {
+			    Log.d(TAG, "getLocalIpAddress(): " + ip4);
+			    ip4s += ip4 + " ";
+			}
 		    }
 		}
 	    }
-	    
+
 	    return ip4s;
 	} catch (Exception e) {
 	    Log.e(TAG, "ServerUtils: getLocalIpAddress(): " + e.getMessage());
