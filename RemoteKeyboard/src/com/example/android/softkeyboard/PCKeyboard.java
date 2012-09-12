@@ -10,7 +10,6 @@ import org.apache.http.conn.util.InetAddressUtils;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
@@ -22,7 +21,6 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 
 import com.example.android.softkeyboard.service.RemoteKeyboardService;
-import com.example.android.softkeyboard.service.ResponseReceiver;
 
 public class PCKeyboard extends InputMethodService implements
 	KeyboardView.OnKeyboardActionListener {
@@ -31,7 +29,7 @@ public class PCKeyboard extends InputMethodService implements
 
     private static final String TAG = "PCK";
 
-    private ResponseReceiver receiver;
+    // private ResponseReceiver receiver;
 
     private KeyboardView mInputView;
 
@@ -50,10 +48,10 @@ public class PCKeyboard extends InputMethodService implements
     public void onCreate() {
 	super.onCreate();
 
-	IntentFilter filter = new IntentFilter(ResponseReceiver.ACTION_RESP);
-	filter.addCategory(Intent.CATEGORY_DEFAULT);
-	receiver = new ResponseReceiver(this);
-	registerReceiver(receiver, filter);
+	// IntentFilter filter = new IntentFilter(ResponseReceiver.ACTION_RESP);
+	// filter.addCategory(Intent.CATEGORY_DEFAULT);
+	// receiver = new ResponseReceiver(this);
+	// registerReceiver(receiver, filter);
 
 	PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 	wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK
@@ -65,7 +63,7 @@ public class PCKeyboard extends InputMethodService implements
 	startService(intent);
 
 	try {
-	    new RemoteKeyboardServer(this, getApplicationContext());
+	    new RemoteKeyboardServer(this, getApplicationContext(), port);
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
