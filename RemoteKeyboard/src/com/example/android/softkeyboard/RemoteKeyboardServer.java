@@ -16,7 +16,7 @@ import android.util.Log;
 
 public class RemoteKeyboardServer extends NanoHTTPD
 {	
-	String msg;
+	String msg = null;
 	PCKeyboard pcK;
 	Context context;
 	
@@ -38,9 +38,7 @@ public class RemoteKeyboardServer extends NanoHTTPD
 	        input.close();
 	        text = new String(buffer);
 		}
-		catch (IOException e) {
-			
-		}
+		catch (IOException e) {}
 
 		msg = text;
 	}
@@ -51,10 +49,10 @@ public class RemoteKeyboardServer extends NanoHTTPD
 		if (method.equalsIgnoreCase("POST"))
 		{
 			Log.i("WEB", "POST: "+parms.getProperty("text"));
+
 			pcK.sendMessage(parms.getProperty("text"));
 		}
 		
 		return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, msg);
 	}
-
 }
