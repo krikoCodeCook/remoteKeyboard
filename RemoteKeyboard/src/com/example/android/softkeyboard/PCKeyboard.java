@@ -7,9 +7,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.KeyboardView;
+import android.os.PowerManager;
+import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
-import android.widget.Toast;
 
 import com.example.android.softkeyboard.service.RemoteKeyboardService;
 import com.example.android.softkeyboard.service.ResponseReceiver;
@@ -17,6 +18,7 @@ import com.example.android.softkeyboard.service.ResponseReceiver;
 public class PCKeyboard extends InputMethodService implements
 	KeyboardView.OnKeyboardActionListener {
     static final boolean DEBUG = false;
+    private PowerManager.WakeLock wakeLock;
 
     private ResponseReceiver receiver;
 
@@ -26,21 +28,26 @@ public class PCKeyboard extends InputMethodService implements
      */
     @Override
     public void onCreate() {
-    	super.onCreate();
-    	IntentFilter filter = new IntentFilter(ResponseReceiver.ACTION_RESP);
-    	filter.addCategory(Intent.CATEGORY_DEFAULT);
-    	receiver = new ResponseReceiver(this);
-    	registerReceiver(receiver, filter);
+	super.onCreate();
 
-    	this.showDebug("onCreate");
-    	Intent intent = new Intent(this, RemoteKeyboardService.class);
-    	startService(intent);
-	
-    	try {
-    		new RemoteKeyboardServer(this, getApplicationContext());
-    	} catch (IOException e) {
-    		e.printStackTrace();
-    	}
+	IntentFilter filter = new IntentFilter(ResponseReceiver.ACTION_RESP);
+	filter.addCategory(Intent.CATEGORY_DEFAULT);
+	receiver = new ResponseReceiver(this);
+	registerReceiver(receiver, filter);
+
+	PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+	wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK
+		| PowerManager.ON_AFTER_RELEASE, "wifikeyboard");
+
+	this.showDebug("onCreate");
+	Intent intent = new Intent(this, RemoteKeyboardService.class);
+	startService(intent);
+
+	try {
+	    new RemoteKeyboardServer(this, getApplicationContext());
+	} catch (IOException e) {
+	    e.printStackTrace();
+	}
     }
 
     /**
@@ -64,7 +71,6 @@ public class PCKeyboard extends InputMethodService implements
 	// broadcastIntent.putExtra(ResponseReceiver.PARAM_MSG, "test");
 	// sendBroadcast(broadcastIntent);
 
-	
 	// InputConnection ic = getCurrentInputConnection();
 	// ic.commitText("Hello", 0);
     }
@@ -76,6 +82,7 @@ public class PCKeyboard extends InputMethodService implements
     @Override
     public void onFinishInput() {
 	super.onFinishInput();
+
     }
 
     /**
@@ -86,20 +93,9 @@ public class PCKeyboard extends InputMethodService implements
 	super.onStartInputView(info, restarting);
 
 	this.showDebug("onStartInputView");
-	
+
 	// InputConnection ic = getCurrentInputConnection();
 	// ic.commitText("Hello", 0);
-    }
-
-    private void showDebug(String name) {
-	if (PCKeyboard.DEBUG) {
-	    Context context = getApplicationContext();
-	    CharSequence text = this.getClass().getName() + name;
-	    int duration = Toast.LENGTH_SHORT;
-
-	    Toast toast = Toast.makeText(context, text, duration);
-	    toast.show();
-	}
     }
 
     @Override
@@ -151,8 +147,19 @@ public class PCKeyboard extends InputMethodService implements
     }
 
     public void sendMessage(String message) {
+	wakeLock.acquire();
+
 	InputConnection ic = this.getCurrentInputConnection();
+
 	if (ic != null)
 	    ic.commitText(message, 0);
+
+	wakeLock.release();
+    }
+
+    private void showDebug(String msg) {
+	if (PCKeyboard.DEBUG) {
+	    Log.d(this.getClass().getName(), msg);
+	}
     }
 }

@@ -10,12 +10,14 @@ import com.example.android.softkeyboard.service.ResponseReceiver;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.PowerManager;
 import android.util.Log;
 
 
 
 public class RemoteKeyboardServer extends NanoHTTPD
 {	
+    	private PowerManager.WakeLock wakeLock;
 	String msg = null;
 	PCKeyboard pcK;
 	Context context;
@@ -24,6 +26,10 @@ public class RemoteKeyboardServer extends NanoHTTPD
 	{
 		super(9998, new File(".").getAbsoluteFile());
 		pcK = pcKeyboard;
+		
+		PowerManager pm = (PowerManager) pcK.getSystemService(Context.POWER_SERVICE);
+		wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK
+			| PowerManager.ON_AFTER_RELEASE, "wifikeyboard");
 		
 		context = ctx;
 		
@@ -51,6 +57,12 @@ public class RemoteKeyboardServer extends NanoHTTPD
 			Log.i("WEB", "POST: "+parms.getProperty("text"));
 
 			pcK.sendMessage(parms.getProperty("text"));
+		} else {
+		    // prevent sleeping
+		    // TODO: javascript in index.html
+		    wakeLock.acquire();
+		    wakeLock.release();
+		    
 		}
 		
 		return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, msg);
