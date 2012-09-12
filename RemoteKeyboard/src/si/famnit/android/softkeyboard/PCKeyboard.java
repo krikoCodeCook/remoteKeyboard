@@ -351,6 +351,7 @@ public class PCKeyboard extends InputMethodService implements
 
     private String getLocalIpAddress() {
 	try {
+	    String ip4s = "";
 	    for (Enumeration<NetworkInterface> en = NetworkInterface
 		    .getNetworkInterfaces(); en.hasMoreElements();) {
 		NetworkInterface intf = en.nextElement();
@@ -361,10 +362,12 @@ public class PCKeyboard extends InputMethodService implements
 		    if (!inetAddress.isLoopbackAddress()
 			    && InetAddressUtils.isIPv4Address(ip4)) {
 			Log.d(TAG, "getLocalIpAddress(): " + ip4);
-			return ip4;
+			ip4s += ", " + ip4;
 		    }
 		}
 	    }
+	    
+	    return ip4s;
 	} catch (Exception e) {
 	    Log.e(TAG, "ServerUtils: getLocalIpAddress(): " + e.getMessage());
 	}
