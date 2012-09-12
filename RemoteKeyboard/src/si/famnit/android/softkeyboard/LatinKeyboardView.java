@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.example.android.softkeyboard;
+package si.famnit.android.softkeyboard;
 
 import android.content.Context;
 import android.inputmethodservice.Keyboard;

@@ -1,6 +1,6 @@
-package com.example.android.softkeyboard.service;
+package si.famnit.android.softkeyboard.service;
 
-import com.example.android.softkeyboard.PCKeyboard;
+import si.famnit.android.softkeyboard.PCKeyboard;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

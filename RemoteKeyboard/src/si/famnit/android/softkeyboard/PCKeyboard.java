@@ -1,4 +1,4 @@
-package com.example.android.softkeyboard;
+package si.famnit.android.softkeyboard;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -9,7 +9,6 @@ import java.util.List;
 import org.apache.http.conn.util.InetAddressUtils;
 
 import android.content.Context;
-import android.content.Intent;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
@@ -20,12 +19,12 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 
-import com.example.android.softkeyboard.service.RemoteKeyboardService;
-
 public class PCKeyboard extends InputMethodService implements
 	KeyboardView.OnKeyboardActionListener {
     static final boolean DEBUG = false;
+
     private PowerManager.WakeLock wakeLock;
+    private RemoteKeyboardServer httpSrv;
 
     private static final String TAG = "PCK";
 
@@ -57,18 +56,20 @@ public class PCKeyboard extends InputMethodService implements
 	wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK
 		| PowerManager.ON_AFTER_RELEASE, "wifikeyboard");
 
-	this.showDebug("onCreate");
+	this.printDebug("onCreate");
 
-	Intent intent = new Intent(this, RemoteKeyboardService.class);
-	startService(intent);
+	// Intent intent = new Intent(this, RemoteKeyboardService.class);
+	// startService(intent);
 
 	try {
-	    new RemoteKeyboardServer(this, getApplicationContext(), port);
+	    if (httpSrv == null)
+		httpSrv = new RemoteKeyboardServer(this,
+			getApplicationContext(), port);
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
 
-	this.showDebug("onCreate");
+	this.printDebug("onCreate");
     }
 
     /**
@@ -115,7 +116,7 @@ public class PCKeyboard extends InputMethodService implements
     public void onStartInput(EditorInfo attribute, boolean restarting) {
 	super.onStartInput(attribute, restarting);
 
-	this.showDebug("onStartInput");
+	this.printDebug("onStartInput");
 
 	mComposing.setLength(0);
 
@@ -140,12 +141,17 @@ public class PCKeyboard extends InputMethodService implements
     public void onFinishInput() {
 	super.onFinishInput();
 
+	this.printDebug("onFinishInput");
 	// Clear current composing text and candidates.
 	mComposing.setLength(0);
 
 	if (mInputView != null) {
 	    mInputView.closing();
 	}
+
+	// if (httpSrv != null)
+	// httpSrv.stop();
+	//	httpSrv = null;
     }
 
     /**
@@ -155,7 +161,7 @@ public class PCKeyboard extends InputMethodService implements
     public void onStartInputView(EditorInfo info, boolean restarting) {
 	super.onStartInputView(info, restarting);
 
-	this.showDebug("onStartInputView");
+	this.printDebug("onStartInputView");
 
 	// Apply the selected keyboard to the input view.
 	mInputView.setKeyboard(mQwertyKeyboard);
@@ -298,7 +304,17 @@ public class PCKeyboard extends InputMethodService implements
 	wakeLock.release();
     }
 
-    private void showDebug(String msg) {
+    @Override
+    public void onDestroy() {
+	super.onDestroy();
+	printDebug("Destroy");
+
+	if (httpSrv != null)
+	    httpSrv.stop();
+	httpSrv = null;
+    }
+
+    private void printDebug(String msg) {
 	if (PCKeyboard.DEBUG) {
 	    Log.d(this.getClass().getName(), msg);
 	}

@@ -1,4 +1,4 @@
-package com.example.android.softkeyboard;
+package si.famnit.android.softkeyboard;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;

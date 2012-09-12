@@ -23,6 +23,42 @@
     </style>
     
     <script src="/jquery.min.js"></script>
+    <script type="text/javascript">
+		$(document).ready(function() {
+			var i = 1;
+			var sleepInterval;
+			
+		  function preventSleep() {
+				$.ajax({
+				  url: 'no-sleep',
+				  type: 'GET'
+				}).done(function() {
+					i++;
+					
+					if (i>8){
+						clearInterval(sleepInterval);
+					} 
+				});
+		  }
+		  
+		  sleepInterval = setInterval(preventSleep, 15000)
+		  
+		  $('#submit').click(function(){
+		  	var data = $('#form').serialize();
+		  	
+				$.ajax({
+				  type: 'POST',
+				  url: '/index.html',
+				  data: data,
+				  success: function(){
+				  	$('#text').val('');
+				  }
+				});
+		  	
+		  	return false;
+		  });
+		});
+    </script>
 
   </head>
 
@@ -30,18 +66,18 @@
 
     <div class="container">
 
-      <form action="" method="POST" accept-charset="UTF-8">
+      <form id="form" action="/index.html" method="POST" accept-charset="UTF-8">
       <div class="hero-unit">
         <h1>Remote Keyboard</h1>
         <p>Write down and click the send button in order to send the text to your device.</p>
         
 
           <div class="controls">
-            <textarea name="text" rows="5" autofocus></textarea>
+            <textarea id="text" name="text" rows="5" autofocus></textarea>
           </div>
           
         
-        <p><input type="submit" class="btn btn-primary btn-large" value="Send" /></p>
+        <p><input id="submit" type="submit" class="btn btn-primary btn-large" value="Send" /></p>
       </div>
       </form>
       <hr>

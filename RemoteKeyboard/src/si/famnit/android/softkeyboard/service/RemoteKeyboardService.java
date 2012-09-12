@@ -1,4 +1,4 @@
-package com.example.android.softkeyboard.service;
+package si.famnit.android.softkeyboard.service;
 
 import android.app.IntentService;
 import android.content.Context;
