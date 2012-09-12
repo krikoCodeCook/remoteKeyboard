@@ -20,9 +20,9 @@ public class RemoteKeyboardServer extends NanoHTTPD
 	PCKeyboard pcK;
 	Context context;
 	
-	public RemoteKeyboardServer(PCKeyboard pcKeyboard, Context ctx) throws IOException
+	public RemoteKeyboardServer(PCKeyboard pcKeyboard, Context ctx, int port) throws IOException
 	{
-		super(9998, new File(".").getAbsoluteFile());
+		super(port, new File(".").getAbsoluteFile());
 		pcK = pcKeyboard;
 		
 		context = ctx;
