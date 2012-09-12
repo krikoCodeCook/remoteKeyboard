@@ -88,16 +88,16 @@ public class PCKeyboard extends InputMethodService implements KeyboardView.OnKey
 	@Override
 	public void onInitializeInterface()
 	{
-		if (mQwertyKeyboard != null)
-		{
-			// Configuration changes can happen after the keyboard gets recreated,
-			// so we need to be able to re-build the keyboards if the available
-			// space has changed.
-			int displayWidth = getMaxWidth();
-			if (displayWidth == mLastDisplayWidth)
-				return;
-			mLastDisplayWidth = displayWidth;
-		}
+//		if (mQwertyKeyboard != null)
+//		{
+//			// Configuration changes can happen after the keyboard gets recreated,
+//			// so we need to be able to re-build the keyboards if the available
+//			// space has changed.
+//			int displayWidth = getMaxWidth();
+//			if (displayWidth == mLastDisplayWidth)
+//				return;
+//			mLastDisplayWidth = displayWidth;
+//		}
 		// mQwertyKeyboard = new LatinKeyboard(this, R.xml.qwerty);
 		// mSymbolsKeyboard = new LatinKeyboard(this, R.xml.symbols);
 		// mSymbolsShiftedKeyboard = new LatinKeyboard(this, R.xml.symbols_shift);
@@ -138,93 +138,93 @@ public class PCKeyboard extends InputMethodService implements KeyboardView.OnKey
 	{
 		super.onStartInput(attribute, restarting);
 
-		// Reset our state. We want to do this even if restarting, because
-		// the underlying state of the text editor could have changed in any way.
-		mComposing.setLength(0);
-		updateCandidates();
-
-		if (!restarting)
-		{
-			// Clear shift states.
-			mMetaState = 0;
-		}
-
-		mPredictionOn = false;
-		mCompletionOn = false;
-		mCompletions = null;
-
-		// We are now going to initialize our state based on the type of
-		// text being edited.
-		switch (attribute.inputType & EditorInfo.TYPE_MASK_CLASS)
-		{
-			case EditorInfo.TYPE_CLASS_NUMBER:
-			case EditorInfo.TYPE_CLASS_DATETIME:
-				// Numbers and dates default to the symbols keyboard, with
-				// no extra features.
-				mCurKeyboard = mSymbolsKeyboard;
-				break;
-
-			case EditorInfo.TYPE_CLASS_PHONE:
-				// Phones will also default to the symbols keyboard, though
-				// often you will want to have a dedicated phone keyboard.
-				mCurKeyboard = mSymbolsKeyboard;
-				break;
-
-			case EditorInfo.TYPE_CLASS_TEXT:
-				// This is general text editing. We will default to the
-				// normal alphabetic keyboard, and assume that we should
-				// be doing predictive text (showing candidates as the
-				// user types).
-				mCurKeyboard = mQwertyKeyboard;
-				mPredictionOn = true;
-
-				// We now look for a few special variations of text that will
-				// modify our behavior.
-				int variation = attribute.inputType & EditorInfo.TYPE_MASK_VARIATION;
-				if (variation == EditorInfo.TYPE_TEXT_VARIATION_PASSWORD
-						|| variation == EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD)
-				{
-					// Do not display predictions / what the user is typing
-					// when they are entering a password.
-					mPredictionOn = false;
-				}
-
-				if (variation == EditorInfo.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
-						|| variation == EditorInfo.TYPE_TEXT_VARIATION_URI
-						|| variation == EditorInfo.TYPE_TEXT_VARIATION_FILTER)
-				{
-					// Our predictions are not useful for e-mail addresses
-					// or URIs.
-					mPredictionOn = false;
-				}
-
-				if ((attribute.inputType & EditorInfo.TYPE_TEXT_FLAG_AUTO_COMPLETE) != 0)
-				{
-					// If this is an auto-complete text view, then our predictions
-					// will not be shown and instead we will allow the editor
-					// to supply their own. We only show the editor's
-					// candidates when in fullscreen mode, otherwise relying
-					// own it displaying its own UI.
-					mPredictionOn = false;
-					mCompletionOn = isFullscreenMode();
-				}
-
-				// We also want to look at the current state of the editor
-				// to decide whether our alphabetic keyboard should start out
-				// shifted.
-				updateShiftKeyState(attribute);
-				break;
-
-			default:
-				// For all unknown input types, default to the alphabetic
-				// keyboard with no special features.
-				mCurKeyboard = mQwertyKeyboard;
-				updateShiftKeyState(attribute);
-		}
-
-		// Update the label on the enter key, depending on what the application
-		// says it will do.
-		// mCurKeyboard.setImeOptions(getResources(), attribute.imeOptions);
+//		// Reset our state. We want to do this even if restarting, because
+//		// the underlying state of the text editor could have changed in any way.
+//		mComposing.setLength(0);
+//		updateCandidates();
+//
+//		if (!restarting)
+//		{
+//			// Clear shift states.
+//			mMetaState = 0;
+//		}
+//
+//		mPredictionOn = false;
+//		mCompletionOn = false;
+//		mCompletions = null;
+//
+//		// We are now going to initialize our state based on the type of
+//		// text being edited.
+//		switch (attribute.inputType & EditorInfo.TYPE_MASK_CLASS)
+//		{
+//			case EditorInfo.TYPE_CLASS_NUMBER:
+//			case EditorInfo.TYPE_CLASS_DATETIME:
+//				// Numbers and dates default to the symbols keyboard, with
+//				// no extra features.
+//				mCurKeyboard = mSymbolsKeyboard;
+//				break;
+//
+//			case EditorInfo.TYPE_CLASS_PHONE:
+//				// Phones will also default to the symbols keyboard, though
+//				// often you will want to have a dedicated phone keyboard.
+//				mCurKeyboard = mSymbolsKeyboard;
+//				break;
+//
+//			case EditorInfo.TYPE_CLASS_TEXT:
+//				// This is general text editing. We will default to the
+//				// normal alphabetic keyboard, and assume that we should
+//				// be doing predictive text (showing candidates as the
+//				// user types).
+//				mCurKeyboard = mQwertyKeyboard;
+//				mPredictionOn = true;
+//
+//				// We now look for a few special variations of text that will
+//				// modify our behavior.
+//				int variation = attribute.inputType & EditorInfo.TYPE_MASK_VARIATION;
+//				if (variation == EditorInfo.TYPE_TEXT_VARIATION_PASSWORD
+//						|| variation == EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD)
+//				{
+//					// Do not display predictions / what the user is typing
+//					// when they are entering a password.
+//					mPredictionOn = false;
+//				}
+//
+//				if (variation == EditorInfo.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+//						|| variation == EditorInfo.TYPE_TEXT_VARIATION_URI
+//						|| variation == EditorInfo.TYPE_TEXT_VARIATION_FILTER)
+//				{
+//					// Our predictions are not useful for e-mail addresses
+//					// or URIs.
+//					mPredictionOn = false;
+//				}
+//
+//				if ((attribute.inputType & EditorInfo.TYPE_TEXT_FLAG_AUTO_COMPLETE) != 0)
+//				{
+//					// If this is an auto-complete text view, then our predictions
+//					// will not be shown and instead we will allow the editor
+//					// to supply their own. We only show the editor's
+//					// candidates when in fullscreen mode, otherwise relying
+//					// own it displaying its own UI.
+//					mPredictionOn = false;
+//					mCompletionOn = isFullscreenMode();
+//				}
+//
+//				// We also want to look at the current state of the editor
+//				// to decide whether our alphabetic keyboard should start out
+//				// shifted.
+//				updateShiftKeyState(attribute);
+//				break;
+//
+//			default:
+//				// For all unknown input types, default to the alphabetic
+//				// keyboard with no special features.
+//				mCurKeyboard = mQwertyKeyboard;
+//				updateShiftKeyState(attribute);
+//		}
+//
+//		// Update the label on the enter key, depending on what the application
+//		// says it will do.
+//		// mCurKeyboard.setImeOptions(getResources(), attribute.imeOptions);
 	}
 
 	/**
@@ -236,21 +236,21 @@ public class PCKeyboard extends InputMethodService implements KeyboardView.OnKey
 	{
 		super.onFinishInput();
 
-		// Clear current composing text and candidates.
-		mComposing.setLength(0);
-		updateCandidates();
-
-		// We only hide the candidates window when finishing input on
-		// a particular editor, to avoid popping the underlying application
-		// up and down if the user is entering text into the bottom of
-		// its window.
-		setCandidatesViewShown(false);
-
-		mCurKeyboard = mQwertyKeyboard;
-		if (mInputView != null)
-		{
-			mInputView.closing();
-		}
+//		// Clear current composing text and candidates.
+//		mComposing.setLength(0);
+//		updateCandidates();
+//
+//		// We only hide the candidates window when finishing input on
+//		// a particular editor, to avoid popping the underlying application
+//		// up and down if the user is entering text into the bottom of
+//		// its window.
+//		setCandidatesViewShown(false);
+//
+//		mCurKeyboard = mQwertyKeyboard;
+//		if (mInputView != null)
+//		{
+//			mInputView.closing();
+//		}
 	}
 
 	// @Override public void onStartInputView(EditorInfo attribute, boolean
