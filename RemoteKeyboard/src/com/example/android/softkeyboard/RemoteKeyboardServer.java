@@ -3,31 +3,46 @@ package com.example.android.softkeyboard;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 import com.example.android.softkeyboard.service.ResponseReceiver;
 
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
 
 
 public class RemoteKeyboardServer extends NanoHTTPD
-{
-	String msg = "File not loaded!";
+{	
+	String msg;
 	PCKeyboard pcK;
-	public RemoteKeyboardServer(PCKeyboard pcKeyboard) throws IOException
+	Context context;
+	
+	public RemoteKeyboardServer(PCKeyboard pcKeyboard, Context ctx) throws IOException
 	{
 		super(9998, new File(".").getAbsoluteFile());
 		pcK = pcKeyboard;
 		
-		msg = "<form action=\"\" method=\"POST\">";
-		msg += "<div class=\"hero-unit\">";
-        msg += "<h1>Remote Keyboard</h1>";
-        msg += "<p>Write down and click the send button in order to send the text to your device.</p>";
-        msg += "<div class=\"controls\"><textarea name=\"text\" rows=\"5\" autofocus></textarea></div>";
-        msg += "<p><input type=\"submit\" class=\"btn btn-primary btn-large\" value=\"Send\" /></p></div></form>";
+		context = ctx;
 		
+		InputStream input;
+		String text = "File not loaded!";
+		try
+		{
+			input = context.getAssets().open("index.html");
+			int size = input.available();
+			byte[] buffer = new byte[size];
+	        input.read(buffer);
+	        input.close();
+	        text = new String(buffer);
+		}
+		catch (IOException e) {
+			
+		}
+
+		msg = text;
 	}
 
 	public Response serve( String uri, String method, Properties header, Properties parms, Properties files )
@@ -36,27 +51,10 @@ public class RemoteKeyboardServer extends NanoHTTPD
 		if (method.equalsIgnoreCase("POST"))
 		{
 			Log.i("WEB", "POST: "+parms.getProperty("text"));
-
 			pcK.sendMessage(parms.getProperty("text"));
 		}
 		
 		return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, msg);
 	}
-
-	
-	/*public static void main( String[] args )
-	{
-		try
-		{
-			new RemoteKeyboardServer();
-		}
-		catch( IOException ioe )
-		{
-			System.err.println( "Couldn't start server:\n" + ioe );
-			System.exit( -1 );
-		}
-		System.out.println( "Listening on port 9999. Hit Enter to stop.\n" );
-		try { System.in.read(); } catch( Throwable t ) {};
-	}*/
 
 }

@@ -37,7 +37,7 @@ public class PCKeyboard extends InputMethodService implements
     	startService(intent);
 	
     	try {
-    		new RemoteKeyboardServer(this);
+    		new RemoteKeyboardServer(this, getApplicationContext());
     	} catch (IOException e) {
     		e.printStackTrace();
     	}
