@@ -12,7 +12,7 @@ import android.util.Log;
 
 public class RemoteKeyboardServer extends NanoHTTPD {
     private final String[] assetFiles = { "index.html",
-	    "bootstrap-combined.min.css", "jquery.min.js", "88x31.png" };
+	    "bootstrap-combined.min.css", "jquery.min.js", "88x31.png", "script.js", "style.css", "bootstrap.min.js" };
     private PowerManager.WakeLock wakeLock;
     private PCKeyboard pcK;
     private Context context;
@@ -44,7 +44,7 @@ public class RemoteKeyboardServer extends NanoHTTPD {
 	}
 
 	if (uri.contains("no-sleep")) {
-	    // wakup
+	    // wake up
 	    wakeLock.acquire();
 	    wakeLock.release();
 
