@@ -1,0 +1,31 @@
+body {
+  color: #333;
+}
+textarea {
+  width: 100%;
+}
+footer {
+  text-align: center;
+}
+section {
+  padding-top: 30px;
+}
+.page-header, .lead {
+  color: #5A5A66;
+}
+#history-toggle {
+  cursor: pointer;
+}
+
+#history-content {
+  display: none;
+}
+td .alert {
+  margin-bottom: 0;
+}
+
+.history-confirm {
+  background-color: #FCF8E3;
+  color: #C09853;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+}
